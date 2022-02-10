@@ -1,0 +1,26 @@
+my_att_init (); //gatt initialization
+
+const u8	tbl_advData[];
+const u8	tbl_scanRsp [];
+
+ADV_TYPE_CONNECTABLE_UNDIRECTED             = 0x00,  // ADV_IND 可连接的非定向广播
+ADV_TYPE_CONNECTABLE_DIRECTED_HIGH_DUTY     = 0x01,  // ADV_INDIRECT_IND (high duty cycle) 可连接的定向广播
+ADV_TYPE_SCANNABLE_UNDIRECTED               = 0x02 , // ADV_SCAN_IND 可扫描的非定向广播
+ADV_TYPE_NONCONNECTABLE_UNDIRECTED          = 0x03 , // ADV_NONCONN_IND 不可连接的非定向广播
+ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY      = 0x04,  // ADV_INDIRECT_IND (low duty cycle) 可连接的定向广播
+
+bls_ll_setAdvParam( MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
+										ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY, app_own_address_type,
+										bondInfo.peer_addr_type,  bondInfo.peer_addr,
+										MY_APP_ADV_CHANNEL,
+										ADV_FP_NONE);
+
+bls_ll_setAdvDuration(MY_DIRECT_ADV_TMIE, 1);
+bls_app_registerEventCallback (BLT_EV_FLAG_ADV_DURATION_TIMEOUT, &app_switch_to_indirect_adv);
+
+	bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);
+	bls_app_registerEventCallback (BLT_EV_FLAG_TERMINATE, &ble_remote_terminate);
+
+
+	bls_app_registerEventCallback (BLT_EV_FLAG_CONN_PARA_REQ, &task_conn_update_req);
+	bls_app_registerEventCallback (BLT_EV_FLAG_CONN_PARA_UPDATE, &task_conn_update_done);
